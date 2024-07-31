@@ -8,88 +8,90 @@ const delay = Math.floor(Math.random()) * 0.5;
 const iterationCount = "infinite";
 
 const mapMarkers: MapMarker[] = [
-  {
-    id: "2",
-    position: { lat: 37.06452161, lng: -75.67364786 },
-    icon: "😴",
-    size: [64, 64],
-    animation: {
-      duration,
-      delay,
-      iterationCount,
-      type: AnimationType.PULSE
-    }
-  },
-  {
-    id: "19",
-    position: { lat: 36.46410354, lng: -75.6432701 },
-    icon:
-      "https://www.catster.com/wp-content/uploads/2018/07/Savannah-cat-long-body-shot.jpg",
-    size: [32, 32],
-    animation: {
-      duration,
-      delay,
-      iterationCount,
-      type: AnimationType.BOUNCE
-    }
-  },
-  {
-    id: "100",
-    position: new LatLng(37.23310632, -76.23518332),
-    icon: emoji[Math.floor(Math.random() * emoji.length)],
-    animation: {
-      duration,
-      delay,
-      iterationCount,
-      type: AnimationType.WAGGLE
-    }
-  },
-  {
-    id: "1",
-    position: { lat: 36.46410354, lng: -75.6432701 },
-    icon: "😴",
-    size: [32, 32],
-    animation: {
-      type: AnimationType.SPIN,
-      duration,
-      delay,
-      iterationCount
-    }
-  },
-  {
-    id: "1000",
-    position: new LatLng(36.60061515, -76.48888338),
-    icon: svgIcons.greenCircle,
-    animation: {
-      duration,
-      delay,
-      iterationCount,
-      type: AnimationType.PULSE
-    }
-  },
+//   {
+//     id: "2",
+//     position: { lat: 37.06452161, lng: -75.67364786 },
+//     icon: "😴",
+//     size: [64, 64],
+//     animation: {
+//       duration,
+//       delay,
+//       iterationCount,
+//       type: AnimationType.PULSE,
+//     },
+//   },
+//   {
+//     id: "19",
+//     position: { lat: 36.46410354, lng: -75.6432701 },
+//     icon: "https://www.catster.com/wp-content/uploads/2018/07/Savannah-cat-long-body-shot.jpg",
+//     size: [32, 32],
+//     animation: {
+//       duration,
+//       delay,
+//       iterationCount,
+//       type: AnimationType.BOUNCE,
+//     },
+//   },
+//   {
+//     id: "100",
+//     position: new LatLng(37.23310632, -76.23518332),
+//     icon: emoji[Math.floor(Math.random() * emoji.length)],
+//     animation: {
+//       duration,
+//       delay,
+//       iterationCount,
+//       type: AnimationType.WAGGLE,
+//     },
+//   },
+//   {
+//     id: "1",
+//     position: { lat: 36.46410354, lng: -75.6432701 },
+//     icon: "😴",
+//     size: [32, 32],
+//     animation: {
+//       type: AnimationType.SPIN,
+//       duration,
+//       delay,
+//       iterationCount,
+//     },
+//   },
+//   {
+//     id: "1000",
+//     position: new LatLng(36.60061515, -76.48888338),
+//     icon: svgIcons.greenCircle,
+//     animation: {
+//       duration,
+//       delay,
+//       iterationCount,
+//       type: AnimationType.PULSE,
+//     },
+//   },
   {
     id: Math.floor(Math.random() * 1000).toString(),
     position: { lat: 37.0580835, lng: -75.82318747 },
     icon: "Fish",
+	title: "marker",
+	iconPopup: 'https://fleetlize.thecodingbuzz.com/src/uploads/car-placeholderGreen.png',
+	badgeLabel: "Actif",
     animation: {
       type: AnimationType.WAGGLE,
       duration,
       delay,
-      iterationCount
-    }
+      iterationCount,
+    },
   },
-  {
-    id: Math.floor(Math.random() * 1000).toString(),
-    position: { lat: 37.23310632, lng: -76.23518332 },
-    icon: emoji[Math.floor(Math.random() * emoji.length)],
-    size: [4, 4],
-    animation: {
-      type: AnimationType.PULSE,
-      duration,
-      delay,
-      iterationCount
-    }
-  }
+//   {
+//     id: Math.floor(Math.random() * 1000).toString(),
+//     position: { lat: 37.23310632, lng: -76.23518332 },
+//     icon: emoji[Math.floor(Math.random() * emoji.length)],
+//     size: [4, 4],
+//     animation: {
+//       type: AnimationType.PULSE,
+//       duration,
+//       delay,
+//       iterationCount,
+//     },
+//   },
   /*
 	{
 		id: Math.floor(Math.random() * 1000),

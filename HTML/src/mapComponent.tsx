@@ -1,28 +1,28 @@
-import React, { Component } from "react";
-import "leaflet/dist/leaflet.css";
+import L from "leaflet";
 import "leaflet/dist/images/layers-2x.png";
 import "leaflet/dist/images/layers.png";
 import "leaflet/dist/images/marker-icon-2x.png";
 import icon from "leaflet/dist/images/marker-icon.png";
 import iconShadow from "leaflet/dist/images/marker-shadow.png";
+import "leaflet/dist/leaflet.css";
+import React, { Component } from "react";
+import { LatLng, LeafletContext, Viewport } from "react-leaflet";
 import MapComponentView from "./MapComponent.view";
-import L from "leaflet";
-import mockMapLayers from "./testData/mockMapLayers";
-import mockMapShapes from "./testData/mockMapShapes";
-import mockMapMarkers from "./testData/mockMapMarkers";
 import {
-  WebViewLeafletEvents,
+  // AnimationType,
+  // INFINITE_ANIMATION_ITERATIONS,
   MapEventMessage,
   MapLayer,
   MapMarker,
   MapShape,
-  INFINITE_ANIMATION_ITERATIONS,
-  AnimationType,
-  WebviewLeafletMessagePayload
+  WebViewLeafletEvents,
+  WebviewLeafletMessagePayload,
 } from "./models";
-import "./styles/markers.css";
 import "./styles/markerAnimations.css";
-import { LatLng } from "react-leaflet";
+import "./styles/markers.css";
+import mockMapLayers from "./testData/mockMapLayers";
+// import mockMapMarkers from "./testData/mockMapMarkers";
+// import mockMapShapes from "./testData/mockMapShapes";
 
 export const SHOW_DEBUG_INFORMATION = false;
 const ENABLE_BROWSER_TESTING = true;
@@ -38,6 +38,10 @@ interface State {
   ownPositionMarker: MapMarker;
   mapRef: any;
   zoom: number;
+  className?: string | null;
+  contextValue?: LeafletContext | null;
+  container?: HTMLDivElement | null;
+  viewport?: Viewport | null;
 }
 
 export default class MapComponent extends Component<{}, State> {
@@ -53,20 +57,20 @@ export default class MapComponent extends Component<{}, State> {
       mapShapes: [],
       mapRef: null,
       ownPositionMarker: null,
-      zoom: 6
+      zoom: 6,
     };
   }
 
   componentDidMount = () => {
     let DefaultIcon = L.icon({
       iconUrl: icon,
-      shadowUrl: iconShadow
+      shadowUrl: iconShadow,
     });
     L.Marker.prototype.options.icon = DefaultIcon;
 
     this.addEventListeners();
     this.sendMessage({
-      msg: WebViewLeafletEvents.MAP_COMPONENT_MOUNTED
+      msg: WebViewLeafletEvents.MAP_COMPONENT_MOUNTED,
     });
     if (ENABLE_BROWSER_TESTING) {
       this.loadMockData();
@@ -78,7 +82,7 @@ export default class MapComponent extends Component<{}, State> {
     if (mapRef && !prevState.mapRef) {
       mapRef.current?.leafletElement.invalidateSize();
       this.sendMessage({
-        msg: WebViewLeafletEvents.MAP_READY
+        msg: WebViewLeafletEvents.MAP_READY,
       });
     }
   };
@@ -89,8 +93,8 @@ export default class MapComponent extends Component<{}, State> {
       this.setState({
         debugMessages: [
           ...this.state.debugMessages,
-          JSON.stringify(msg, null, 4)
-        ]
+          JSON.stringify(msg, null, 4),
+        ],
       });
     } else {
       this.setState({ debugMessages: [...this.state.debugMessages, msg] });
@@ -102,19 +106,19 @@ export default class MapComponent extends Component<{}, State> {
       document.addEventListener("message", this.handleMessage);
       this.addDebugMessage("set document listeners");
       this.sendMessage({
-        msg: WebViewLeafletEvents.DOCUMENT_EVENT_LISTENER_ADDED
+        msg: WebViewLeafletEvents.DOCUMENT_EVENT_LISTENER_ADDED,
       });
     }
     if (window) {
       window.addEventListener("message", this.handleMessage);
       this.addDebugMessage("setting Window");
       this.sendMessage({
-        msg: WebViewLeafletEvents.WINDOW_EVENT_LISTENER_ADDED
+        msg: WebViewLeafletEvents.WINDOW_EVENT_LISTENER_ADDED,
       });
     }
     if (!document && !window) {
       this.sendMessage({
-        error: WebViewLeafletEvents.UNABLE_TO_ADD_EVENT_LISTENER
+        error: WebViewLeafletEvents.UNABLE_TO_ADD_EVENT_LISTENER,
       });
       return;
     }
@@ -126,7 +130,7 @@ export default class MapComponent extends Component<{}, State> {
       if (event.data.mapCenterPosition) {
         this.state.mapRef.leafletElement.flyTo([
           event.data.mapCenterPosition.lat,
-          event.data.mapCenterPosition.lng
+          event.data.mapCenterPosition.lng,
         ]);
       }
       this.setState({ ...this.state, ...event.data });
@@ -148,20 +152,20 @@ export default class MapComponent extends Component<{}, State> {
     this.addDebugMessage("loading mock data");
     this.setState({
       mapLayers: mockMapLayers,
-      mapMarkers: mockMapMarkers,
-      mapShapes: mockMapShapes,
-      ownPositionMarker: {
-        id: "Own Position",
-        position: { lat: 36.56, lng: -76.17 },
-        icon: "❤️",
-        size: [32, 32],
-        animation: {
-          duration: 1,
-          delay: 0,
-          iterationCount: INFINITE_ANIMATION_ITERATIONS,
-          type: AnimationType.BOUNCE
-        }
-      }
+      // mapMarkers: mockMapMarkers,
+      // mapShapes: mockMapShapes,
+      // ownPositionMarker: {
+      //   id: "Own Position",
+      //   position: { lat: 36.56, lng: -76.17 },
+      //   icon: "❤️",
+      //   size: [32, 32],
+      //   animation: {
+      //     duration: 1,
+      //     delay: 0,
+      //     iterationCount: INFINITE_ANIMATION_ITERATIONS,
+      //     type: AnimationType.BOUNCE,
+      //   },
+      // },
     });
   };
 
@@ -173,13 +177,13 @@ export default class MapComponent extends Component<{}, State> {
       debugger;
       const mapCenterPosition: LatLng = {
         lat: this.state.mapRef.leafletElement?.getCenter().lat,
-        lng: this.state.mapRef.leafletElement?.getCenter().lng
+        lng: this.state.mapRef.leafletElement?.getCenter().lng,
       };
 
       payload = {
         mapCenterPosition: mapCenterPosition,
         bounds: this.state.mapRef.leafletElement?.getBounds(),
-        zoom: this.state.mapRef.leafletElement?.getZoom()
+        zoom: this.state.mapRef.leafletElement?.getZoom(),
       };
     }
     this.sendMessage({ event: webViewLeafletEvent, payload });
@@ -192,27 +196,12 @@ export default class MapComponent extends Component<{}, State> {
   };
 
   render() {
-    const {
-      debugMessages,
-      mapCenterPosition,
-      mapLayers,
-      mapMarkers,
-      mapShapes,
-      ownPositionMarker,
-      zoom
-    } = this.state;
     return (
       <MapComponentView
         addDebugMessage={this.addDebugMessage}
-        debugMessages={debugMessages}
-        mapCenterPosition={mapCenterPosition}
-        mapLayers={mapLayers}
-        mapMarkers={mapMarkers}
-        mapShapes={mapShapes}
         onMapEvent={this.onMapEvent}
-        ownPositionMarker={ownPositionMarker}
         setMapRef={this.setMapRef}
-        zoom={zoom}
+        {...this.state}
       />
     );
   }

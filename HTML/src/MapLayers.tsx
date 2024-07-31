@@ -6,7 +6,7 @@ import {
   WMSTileLayerProps,
   TileLayerProps,
   ImageOverlay,
-  ImageOverlayProps
+  ImageOverlayProps,
 } from "react-leaflet";
 import { MapLayer, MapLayerType } from "./models";
 
@@ -14,6 +14,7 @@ const { BaseLayer } = LayersControl;
 
 interface MapLayersProps {
   mapLayers: MapLayer[];
+  showLayerControl?: boolean;
 }
 
 class MapLayers extends React.Component<MapLayersProps> {
@@ -29,28 +30,26 @@ class MapLayers extends React.Component<MapLayersProps> {
   };
 
   private Layers = (): JSX.Element[] => {
-    const { mapLayers } = this.props;
-    return mapLayers.map(
-      (layer: MapLayer, index: number): JSX.Element => {
-        if (layer.baseLayerName && mapLayers.length > 1) {
-          return (
-            <BaseLayer
-              key={`layer-${index}`}
-              checked={layer.baseLayerIsChecked ?? false}
-              name={layer.baseLayerName || `Layer.${index}`}
-            >
-              <this.Layer {...layer} />
-            </BaseLayer>
-          );
-        }
-        return <this.Layer key={`layer-${index}`} {...layer} />;
+    const { mapLayers, showLayerControl } = this.props;
+    return mapLayers.map((layer: MapLayer, index: number): JSX.Element => {
+      if (layer.baseLayerName && mapLayers.length > 1 && showLayerControl) {
+        return (
+          <BaseLayer
+            key={`layer-${index}`}
+            checked={layer.baseLayerIsChecked ?? false}
+            name={layer.baseLayerName || `Layer.${index}`}
+          >
+            <this.Layer {...layer} />
+          </BaseLayer>
+        );
       }
-    );
+      return <this.Layer key={`layer-${index}`} {...layer} />;
+    });
   };
 
   render() {
-    const { mapLayers } = this.props;
-    if (mapLayers.length > 1) {
+    const { mapLayers, showLayerControl } = this.props;
+    if (mapLayers.length > 1 && showLayerControl) {
       return <LayersControl>{this.Layers()}</LayersControl>;
     } else {
       return <>{this.Layers()}</>;

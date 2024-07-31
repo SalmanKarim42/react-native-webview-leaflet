@@ -10,6 +10,8 @@ import {
 import { LatLngExpression } from "leaflet";
 require("react-leaflet-markercluster/dist/styles.min.css");
 
+
+
 interface MapMarkersProps {
   mapMarkers: MapMarker[];
   onMapEvent: (mapEvent: WebViewLeafletEvents, payload: any) => void;
@@ -29,7 +31,22 @@ export default class MapMarkers extends React.Component<MapMarkersProps> {
           });
         }}
       >
-        {mapMarker.title && <Popup>{mapMarker.title}</Popup>}
+        {mapMarker.title && <Popup className="marker-popup">
+          <div className="marker-popup-stack">
+            <div className="marker-popup-avatar">
+              <img src={mapMarker.iconPopup} alt="icon" className="marker-avatar-icon" />
+            </div>
+            <div className="text-content">
+              <p className="marker-title">
+                {mapMarker.title}
+              </p>
+              <div className="marker-chip" style={{ backgroundColor: mapMarker.badgeBgColor }}>
+                <div className="marker-chip-dot" style={{ backgroundColor: mapMarker.badgeColor }}></div>
+                <p className="marker-chip-label" style={{ color: mapMarker.badgeColor }}>{mapMarker.badgeLabel}</p>
+              </div>
+            </div>
+          </div>
+        </Popup>}
       </Marker>
     );
   };

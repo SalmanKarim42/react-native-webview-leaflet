@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useState, useEffect } from "react";
 import Measure from "react-measure";
-import { Map, LatLng } from "react-leaflet";
+import { Map, LatLng, MapProps } from "react-leaflet";
 import MapLayers from "./MapLayers";
 import MapMarkers from "./MapMarkers";
 import { SHOW_DEBUG_INFORMATION } from "./MapComponent";
@@ -9,7 +9,7 @@ import { WebViewLeafletEvents, MapLayer, MapMarker, MapShape } from "./models";
 import MapShapes from "./MapShapes";
 import { LatLngExpression } from "leaflet";
 
-interface MapComponentViewProps {
+interface MapComponentViewProps extends Omit<MapProps, "children"> {
   addDebugMessage: (msg: any) => void;
   debugMessages: string[];
   mapCenterPosition: LatLng;
@@ -20,9 +20,10 @@ interface MapComponentViewProps {
   ownPositionMarker: MapMarker;
   setMapRef: (mapRef: any) => void;
   zoom: number;
+  showLayerControl?: boolean;
 }
 
-const MapComponentView: React.FC<MapComponentViewProps> = ({
+const MapComponentView = ({
   addDebugMessage,
   debugMessages,
   mapCenterPosition,
@@ -32,7 +33,12 @@ const MapComponentView: React.FC<MapComponentViewProps> = ({
   onMapEvent,
   ownPositionMarker,
   setMapRef,
-  zoom = 13
+  zoom = 13,
+  maxZoom = 17,
+  minZoom = 5,
+  zoomControl = false,
+  showLayerControl = false,
+  ...rest
 }: MapComponentViewProps) => {
   const [dimensions, setDimensions] = useState({ height: 0, width: 0 });
   const [combinedMapMarkers, setCombinedMapMarkers] = useState([]);
@@ -50,8 +56,8 @@ const MapComponentView: React.FC<MapComponentViewProps> = ({
     <>
       <Measure
         bounds
-        onResize={contentRect => {
-          const { height, width } = contentRect.bounds;
+        onResize={(contentRect) => {
+          const { height, width } = contentRect.bounds || {};
           setDimensions({ height, width });
         }}
       >
@@ -63,14 +69,14 @@ const MapComponentView: React.FC<MapComponentViewProps> = ({
               position: "absolute",
               top: 0,
               bottom: 0,
-              backgroundColor: "greenyellow",
+              // backgroundColor: "greenyellow",
               left: 0,
-              right: 0
+              right: 0,
             }}
           >
             {dimensions.height > 0 && (
               <Map
-                ref={ref => {
+                ref={(ref) => {
                   setMapRef(ref);
                 }}
                 center={mapCenterPosition as LatLngExpression}
@@ -79,7 +85,7 @@ const MapComponentView: React.FC<MapComponentViewProps> = ({
                   onMapEvent(WebViewLeafletEvents.ON_MAP_TOUCHED, {
                     containerPoint,
                     layerPoint,
-                    touchLatLng: latlng
+                    touchLatLng: latlng,
                   });
                 }}
                 onZoomLevelsChange={() => {
@@ -112,11 +118,18 @@ const MapComponentView: React.FC<MapComponentViewProps> = ({
                 onViewReset={() => {
                   onMapEvent(WebViewLeafletEvents.ON_VIEW_RESET);
                 }}
-                maxZoom={17}
+                maxZoom={maxZoom}
+                minZoom={minZoom}
                 zoom={zoom}
+                zoomControl={zoomControl}
+                attributionControl={false}
+                {...rest}
                 style={{ width: "100%", height: dimensions.height }}
               >
-                <MapLayers mapLayers={mapLayers} />
+                <MapLayers
+                  showLayerControl={showLayerControl}
+                  mapLayers={mapLayers}
+                />
                 <MapMarkers
                   mapMarkers={combinedMapMarkers}
                   onMapEvent={onMapEvent}
@@ -138,7 +151,7 @@ const MapComponentView: React.FC<MapComponentViewProps> = ({
             bottom: 0,
             left: 0,
             right: 0,
-            zIndex: 15000
+            zIndex: 15000,
           }}
           id="messages"
         >

@@ -78,6 +78,10 @@ export interface MapMarker {
   id?: string;
   size?: Point;
   title?: string;
+  badgeLabel?: string;
+  iconPopup?: string;
+  badgeColor?: string;
+  badgeBgColor?: string;
 }
 
 export interface MapEventMessage {
