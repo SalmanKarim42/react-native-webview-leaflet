@@ -21,6 +21,7 @@ interface MapComponentViewProps extends Omit<MapProps, "children"> {
   setMapRef: (mapRef: any) => void;
   zoom: number;
   showLayerControl?: boolean;
+  debugMap?:boolean
 }
 
 const MapComponentView = ({
@@ -38,6 +39,7 @@ const MapComponentView = ({
   minZoom = 5,
   zoomControl = false,
   showLayerControl = false,
+  debugMap = false,
   ...rest
 }: MapComponentViewProps) => {
   const [dimensions, setDimensions] = useState({ height: 0, width: 0 });
@@ -140,7 +142,7 @@ const MapComponentView = ({
           </div>
         )}
       </Measure>
-      {SHOW_DEBUG_INFORMATION ? (
+      {SHOW_DEBUG_INFORMATION || debugMap ? (
         <div
           style={{
             backgroundColor: "orange",
